@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    transition: background 0.3s, color 0.3s;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+.more-info {
+    display: none;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+ 
+.dark-mode {
+    background-color: #222;
+    color: white;
+}
+
+.dark-mode .box {
+    background: #444;
+}
+
+ 
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+
+ 
+.hamburger {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: gray;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+ 
+nav {
+    position: absolute;
+    top: 70px;  
+    right: 0;
+    background: #444;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;  
+    gap: 20px;
+   
+}
+
+nav ul li {
+    display: inline; word-spacing: 15px;
+}
+
+nav ul li a, nav ul li button {
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+ 
+nav.active {
+    width: 270px;  
+    
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul {
+        flex-direction: column;  
+        gap: 10px;
+    }
+
+    nav.active {
+        width: 100%;
+    }
+}
+.learn-more {
+    display: block;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.learn-more:hover {
+    background-color: #0056b3;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>À propos de ce site</h1>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <nav id="menu">
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="about.html">À propos</a></li>
+            <li><button onclick="toggleTheme()">Thème : <span id="theme-text">Clair</span></button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Qui sommes-nous ?</h2>
+            <p>Ce site a été créé par FOUINI pour aider les débutants à apprendre les bases du HTML, du CSS et du JavaScript.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Site éducatif sur le web</p>
+    </footer>
+
+    <script defer src="script.js"></script>
+</body>
+</html>

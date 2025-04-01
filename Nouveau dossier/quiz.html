@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Programmation</title>
+     
+    <style>body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+    
+    header {
+        background-color: #333;
+        color: white;
+        padding: 10px 0;
+    }
+    
+    nav ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    nav ul li {
+        display: inline;
+        margin: 0 20px;
+    }
+    
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+    
+    #quiz-container {
+        width: 60%;
+        margin: 50px auto;
+        text-align: center;
+    }
+    
+    #timer {
+        position: relative;
+        display: inline-block;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+    
+    .circle {
+        transform: rotate(-90deg);
+    }
+    
+    #timer-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    
+    button:hover {
+        background-color: #ddd;
+    }
+    
+    .option-btn {
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+    }
+    
+    .option-btn:hover {
+        background-color: #f0f0f0;
+    }
+    
+    .correct {
+        background-color: green;
+        color: white;
+    }
+    
+    .incorrect {
+        background-color: red;
+        color: white;
+    }
+    
+    #result {
+        font-size: 18px;
+        font-weight: bold;
+        color: green;
+    }</style>
+</head>
+<body>
+
+<header>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+    <nav id="menu">
+        <ul>
+            <li><a href="thom.html">Accueil</a></li>
+            <li><a href="quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Sélection du niveau -->
+    <div id="level-selection">
+        <h1>Choisissez un niveau</h1>
+        <button onclick="startQuiz('debutant')">Débutant</button>
+        <button onclick="startQuiz('moyen')">Moyen</button>
+        <button onclick="startQuiz('difficile')">Difficile</button>
+    </div>
+
+    <!-- Contenu du quiz -->
+    <div id="quiz-container" style="display: none;">
+        <div id="timer">
+            <svg class="circle" width="120" height="120">
+                <circle cx="60" cy="60" r="50" stroke="#ccc" stroke-width="5" fill="none"></circle>
+                <circle id="circle-progress" cx="60" cy="60" r="50" stroke="green" stroke-width="5" fill="none" stroke-dasharray="314.16" stroke-dashoffset="0"></circle>
+            </svg>
+            <p id="timer-text">30s</p>
+        </div>
+        <p id="question"></p>
+        <div id="options"></div>
+    </div>
+
+    <p id="result"></p>
+</main>
+
+<script>
+    let timer;
+let timeLeft =  10;
+let currentQuestionIndex = 0;
+let level = "";
+let questions = {
+    debutant: [
+        { question: "Quel langage est principalement utilisé pour la création de sites web ?", options: ["Python", "HTML", "C++"], correct: "HTML" },
+        { question: "Quelle structure est utilisée pour répéter une action en boucle ?", options: ["if", "while", "print"], correct: "while" },
+        { question: "Quelle balise HTML est utilisée pour insérer une image ?", options: ["img", "image", "picture"], correct: "img" },
+        { question: "Comment définir une variable en JavaScript ?", options: ["var x;", "let x;", "les deux"], correct: "les deux" },
+        { question: "Quel est le langage de base utilisé pour le style des sites web ?", options: ["CSS", "JavaScript", "PHP"], correct: "CSS" },
+        { question: "Que signifie CSS ?", options: ["Creative Style System", "Cascading Style Sheets", "Computer Style System"], correct: "Cascading Style Sheets" },
+        { question: "Quel symbole est utilisé pour sélectionner un ID en CSS ?", options: ["#", ".", "&"], correct: "#" },
+        { question: "Comment ajouter un commentaire en HTML ?", options: ["<!-- commentaire -->", "// commentaire", "/* commentaire */"], correct: "<!-- commentaire -->" },
+        { question: "Quelle est l'extension d'un fichier JavaScript ?", options: [".js", ".java", ".html"], correct: ".js" },
+        { question: "Quelle est la version actuelle de HTML ?", options: ["HTML4", "HTML5", "HTML6"], correct: "HTML5" },
+        { question: "Quel langage est utilisé pour les bases de données ?", options: ["SQL", "CSS", "JavaScript"], correct: "SQL" },
+        { question: "Quelle méthode ajoute un élément à un tableau en JavaScript ?", options: ["push()", "add()", "insert()"], correct: "push()" },
+        { question: "Quel est le bon format pour une fonction en JS ?", options: ["function maFonction()", "fonction: maFonction()", "def maFonction()"], correct: "function maFonction()" },
+        { question: "Que signifie HTTP ?", options: ["HyperText Transfer Protocol", "High Transfer Protocol", "HyperText Technical Program"], correct: "HyperText Transfer Protocol" },
+        { question: "Quelle commande permet d'afficher un message en console en JS ?", options: ["console.log()", "print()", "echo()"], correct: "console.log()" },
+        { question: "Quelle méthode transforme un string en majuscules en JS ?", options: ["toUpperCase()", "upperCase()", "capitalize()"], correct: "toUpperCase()" },
+        { question: "Quel attribut HTML permet d'ajouter une classe CSS ?", options: ["class", "style", "id"], correct: "class" },
+        { question: "Comment écrire un commentaire en CSS ?", options: ["/* commentaire */", "// commentaire", "<!-- commentaire -->"], correct: "/* commentaire */" },
+        { question: "Quelle propriété CSS permet de changer la couleur du texte ?", options: ["color", "text-color", "font-color"], correct: "color" },
+        { question: "Quel est l'élément racine d'une page HTML ?", options: ["html", "body", "head"], correct: "html" }
+    ],
+    moyen: [
+        { question: "Quel langage permet d'interagir avec une base de données ?", options: ["Python", "JavaScript", "SQL"], correct: "SQL" },
+        { question: "Que signifie DOM en JavaScript ?", options: ["Document Object Model", "Data Object Management", "Document Order Model"], correct: "Document Object Model" },
+        { question: "Quelle fonction retourne la longueur d'un tableau en JS ?", options: ["length()", "size()", "length"], correct: "length" },
+        { question: "Comment déclarer une fonction fléchée en JS ?", options: ["()=>{}", "function(){}", "=>{}"], correct: "()=>{}" },
+        { question: "Que signifie API ?", options: ["Application Programming Interface", "Advanced Programming Integration", "Automated Processing Interface"], correct: "Application Programming Interface" },
+        { question: "Comment sélectionner un élément par son ID en JS ?", options: ["getElementById()", "querySelector()", "getID()"], correct: "getElementById()" },
+        { question: "Quelle méthode JS permet de convertir un string en entier ?", options: ["parseInt()", "toInteger()", "int()"], correct: "parseInt()" },
+        { question: "Quel opérateur permet de comparer la valeur et le type en JS ?", options: ["==", "===", "="], correct: "===" },
+        { question: "Que fait la méthode JSON.parse() ?", options: ["Convertit du texte en objet JS", "Transforme un objet en JSON", "Ajoute du JSON"], correct: "Convertit du texte en objet JS" },
+        { question: "Quel mot-clé en JS empêche la modification d'une variable ?", options: ["let", "const", "var"], correct: "const" },
+        { question: "Que retourne `typeof []` en JS ?", options: ["object", "array", "list"], correct: "object" },
+        { question: "Que permet localStorage en JS ?", options: ["Stocker des données localement", "Gérer des fichiers", "Stocker des données temporaires"], correct: "Stocker des données localement" },
+        { question: "Quel protocole est utilisé pour sécuriser les sites web ?", options: ["HTTP", "HTTPS", "FTP"], correct: "HTTPS" },
+        { question: "Quelle est la portée d'une variable déclarée avec `var` en JS ?", options: ["Globale", "Bloc", "Locale"], correct: "Globale" },
+        { question: "Que signifie MVC en développement ?", options: ["Model View Controller", "Main View Component", "Module Version Control"], correct: "Model View Controller" },
+        { question: "Comment ajouter un élément à un tableau en début en JS ?", options: ["unshift()", "push()", "prepend()"], correct: "unshift()" },
+        { question: "Quelle méthode JS permet d'attendre une réponse asynchrone ?", options: ["await", "setTimeout", "promise"], correct: "await" },
+        { question: "Quel framework est basé sur JS ?", options: ["React", "Laravel", "Django"], correct: "React" },
+        { question: "Quel est le rôle d'un serveur web ?", options: ["Gérer des requêtes HTTP", "Exécuter du JS", "Créer des bases de données"], correct: "Gérer des requêtes HTTP" },
+        { question: "Quel est l'intérêt des cookies en développement web ?", options: ["Stocker des infos utilisateur", "Afficher des pubs", "Éviter les bugs"], correct: "Stocker des infos utilisateur" }
+    ],
+    difficile: [
+        { question: "Quel langage est principalement utilisé pour le développement iOS ?", options: ["Swift", "Java", "Kotlin", "C#"], correct: "Swift" }, 
+        { question: "Que signifie 'OOP' en programmation ?", options: ["Optimized Object Processing", "Object-Oriented Programming", "Operational Output Processing", "Only One Process"], correct: "Object-Oriented Programming" }, 
+        { question: "Quelle est la complexité moyenne de la recherche dans un arbre binaire équilibré ?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], correct: "O(log n)" },
+        { question: "Quel langage est principalement utilisé pour l'intelligence artificielle ?", options: ["C", "Python", "Java", "Swift"], correct: "Python"},
+        { question: "Quel est le principal avantage de Rust ?", options: ["Sa rapidité", "Sa gestion mémoire sûre", "Sa syntaxe simple", "Sa compatibilité avec Java"], correct: "Sa gestion mémoire sûre" },
+        { question: "Quel est le temps d'accès moyen à un élément d'un tableau en mémoire ?", options: ["O(n)", "O(log n)", "O(1)", "O(n log n)"], correct:  "O(1)" }, 
+        { question: "Quelle est la principale caractéristique de Haskell ?", options: ["Langage fonctionnel", "Langage impératif", "Langage orienté objet", "Langage de scripting"], correct: "Langage fonctionnel" },
+        { question: "Quel protocole est utilisé pour sécuriser les communications web ?", options: ["HTTP", "SSH", "SSL/TLS", "FTP"], correct: "SSL/TLS" }, 
+        { question: "Quel langage est conçu par Google ?", options: ["Kotlin", "Rust", "Go", "Dart"], correct: "Go" }, 
+        { question: "Quel langage est principalement utilisé pour les systèmes embarqués ?", options: ["Python", "C", "JavaScript", "Ruby"], correct: "C" },
+        { question: "Quelle est la structure de données utilisée pour implémenter une pile (stack) ?", options: ["File", "Tableau", "Liste chaînée", "Arbre"], correct: "Liste chaînée" },
+        { question: "Quel est le principe de Git ?", options: ["Système de gestion de base de données", "Système de gestion de versions", "Système d’exploitation", "Langage de programmation"], correct:  "Système de gestion de versions" },
+        { question: "Quelle est la principale caractéristique de Lisp ?", options: ["Syntaxe en préfixe", "Orienté objet", "Utilisé uniquement en IA", "Basé sur les pointeurs"], correct: "Syntaxe en préfixe" }, 
+        { question: "Quel algorithme de tri a une complexité moyenne de O(n log n) ?", options: ["Tri à bulles", "Tri rapide (QuickSort)", "Tri par insertion", "Tri par sélection"], correct: "Tri rapide (QuickSort)" }, 
+        { question: "Quel langage est souvent utilisé pour les scripts systèmes sous Linux ?", options: ["Python", "Bash", "C#", "Swift"], correct: "Bash" },
+        { question: "Quelle est la différence entre TCP et UDP ?", options: ["TCP est fiable, UDP est rapide", "UDP est fiable, TCP est rapide", "Les deux sont identiques", "TCP est plus rapide que UDP"], correct: "TCP est fiable, UDP est rapide" }, 
+        { question: "Quel est le langage principal pour le développement Android ?", options: ["Swift", "JavaScript", "Kotlin", "C++"], correct: "Kotlin" }, 
+        { question: "Quel langage est principalement utilisé pour les bases de données relationnelles ?", options: ["Python", "SQL", "NoSQL", "Java"], correct: "SQL" }, 
+        { question: "Que signifie 'REST' en développement web ?", options: ["Remote Execution of Services and Transactions", "Representational State Transfer", "Randomized Execution of Secure Transactions", "Recursive State Transfer"], correct: "Representational State Transfer" },
+        { question: "Qui est le PDG de MICROSOFT ?", options: ["Elon Musk", "Bill Gate", "Jeff Besos", "FOUINI 2.0"], correct: "Bill Gate" }
+    ]
+};
+
+ 
+function startQuiz(selectedLevel) {
+    level = selectedLevel;
+    currentQuestionIndex = 0;
+    document.getElementById("level-selection").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    nextQuestion();
+}
+
+ 
+function nextQuestion() {
+    if (currentQuestionIndex < 20) {
+        displayQuestion(questions[level][currentQuestionIndex]);
+        startTimer();
+    } else {
+        document.getElementById("quiz-container").innerHTML = "<h2>Quiz terminé !</h2>";
+    }
+}
+
+ 
+function startTimer() {
+    clearInterval(timer);
+    timeLeft = 10;
+    updateTimerDisplay();
+    
+    timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+// Mettre à jour l'affichage du chronomètre
+function updateTimerDisplay() {
+    document.getElementById("timer-text").textContent = `${timeLeft}s`;
+    let offset = ((timeLeft / 30) * 314.16);
+    document.getElementById("circle-progress").style.strokeDashoffset = offset;
+}
+ 
+function nextQuestion() {
+    if (currentQuestionIndex < questions[level].length) {
+        displayQuestion(questions[level][currentQuestionIndex]);
+        startTimer();
+    } else {
+        displayResult();
+    }
+}
+
+ 
+function displayQuestion(questionObj) {
+    document.getElementById("question").textContent = questionObj.question;
+    let optionsHTML = '';
+    questionObj.options.forEach(option => {
+        optionsHTML += `<button class="option-btn" onclick="checkAnswer(this, '${option}')">${option}</button>`;
+    });
+    document.getElementById("options").innerHTML = optionsHTML;
+}
+ 
+function checkAnswer(button, selectedOption) {
+    clearInterval(timer);
+    const correctAnswer = questions[level][currentQuestionIndex].correct;
+    
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correctAnswer) {
+            btn.classList.add('correct');
+        } else if (btn.textContent === selectedOption) {
+            btn.classList.add('incorrect');
+        }
+    });
+
+    currentQuestionIndex++;
+    setTimeout(nextQuestion, 2000);
+}
+
+ 
+function displayResult() {
+    document.getElementById("quiz-container").innerHTML = "<h2>Le quiz est terminé !</h2>";
+}
+
+ 
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+ 
+
+
+
+
+
+
+
+
+
+let score = 0;
+let totalQuestions = 20;
+
+function startQuiz(selectedLevel) {
+    level = selectedLevel;
+    currentQuestionIndex = 0;
+    score = 0;
+    document.getElementById("level-selection").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    nextQuestion();
+}
+
+function startTimer() {
+    clearInterval(timer);
+    timeLeft = 30;
+    updateTimerDisplay();
+
+    timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    document.getElementById("timer-text").textContent = `${timeLeft}s`;
+    let offset = ((timeLeft / 30) * 314.16);
+    document.getElementById("circle-progress").style.strokeDashoffset = offset;
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < totalQuestions) {
+        displayQuestion(questions[level][currentQuestionIndex]);
+        startTimer();
+    } else {
+        displayResult();
+    }
+}
+
+function displayQuestion(questionObj) {
+    document.getElementById("question").textContent = questionObj.question;
+    let optionsHTML = '';
+    questionObj.options.forEach(option => {
+        optionsHTML += `<button class="option-btn" onclick="checkAnswer(this, '${option}')">${option}</button>`;
+    });
+    document.getElementById("options").innerHTML = optionsHTML;
+}
+
+function checkAnswer(button, selectedOption) {
+    clearInterval(timer);
+    const correctAnswer = questions[level][currentQuestionIndex].correct;
+
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correctAnswer) {
+            btn.classList.add('correct');
+        } else if (btn.textContent === selectedOption) {
+            btn.classList.add('incorrect');
+        }
+    });
+
+    // Mise à jour du score si la réponse est correcte
+    if (selectedOption === correctAnswer) {
+        score++;
+    }
+
+    setTimeout(() => {
+        currentQuestionIndex++;
+        nextQuestion();
+    }, 1000); // Passage plus rapide à la question suivante
+}
+
+function displayResult() {
+    document.getElementById("quiz-container").innerHTML = `<h2>Quiz terminé !</h2>
+        <p>Votre score : ${score} / ${totalQuestions}</p>
+        <button onclick="location.reload()">Rejouer</button>`;
+}
+
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+</script>
+</body>
+</html>
