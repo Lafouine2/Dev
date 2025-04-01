@@ -194,6 +194,27 @@ nav.active {
         <p>&copy; 2025 - Site éducatif sur la programmation</p>
     </footer>
 
-    <script defer src="script.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", function() {
+     
+});
+
+function showMore(id) {
+    var info = document.getElementById(id);
+    info.style.display = info.style.display === "block" ? "none" : "block";
+}
+
+
+function toggleTheme() {
+    var body = document.body;
+    body.classList.toggle("dark-mode");
+
+    var themeText = document.getElementById("theme-text");
+    themeText.textContent = body.classList.contains("dark-mode") ? "Sombre" : "Clair";
+}
+function toggleMenu() {
+    var menu = document.getElementById("menu");
+    menu.classList.toggle("active");
+}
+    </script>
 </body>
 </html>
